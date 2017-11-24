@@ -172,7 +172,7 @@ class Word2Vec:
 			init = tf.global_variables_initializer()
 			
 		# Link Python program to C++ interface and execute operations on the graph 
-		num_steps = 10000
+		num_steps = 500000
 		with tf.Session(graph=graph) as session:
 		# We must initialize all variables before we use them.
 			init.run()
