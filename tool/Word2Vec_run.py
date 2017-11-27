@@ -4,20 +4,20 @@ sys.path.append('/home/dawna/mah90/Opus2/Project/src/')
 from Word2Vec import Word2Vec
 
 
-batch_size = 128
+batch_size = 256
 embedding_size = 128  # Dimension of the embedding vector.
-skip_window = 1     # How many words to consider left and right.
+skip_window = 2     # How many words to consider left and right.
 num_skips = 2       # How many times to reuse an input to generate a label.
 
 # We pick a random validation set to sample nearest neighbors. 
-valid_size = 10     # Random set of words to evaluate similarity on.
-wordIdStart = 700  # Only pick dev samples in the head of the distribution.
-wordIdEnd = 800
-num_sampled = 100    #
-VocabularySize = 50000
+valid_size = 49     # Random set of words to evaluate similarity on.
+wordIdStart = 100  # Only pick dev samples in the head of the distribution.
+wordIdEnd = 150 
+num_sampled = 64    #
+VocabularySize = 10000
 loss = 'nce'
 optimiser ='gradient_descent'
-learning_rate = 0.2
+learning_rate = 0.1
 dir_to_Save = '/home/dawna/mah90/Opus2/Project/models'
 
 

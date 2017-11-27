@@ -140,7 +140,7 @@ class Word2Vec:
 		embedding = config.embeddings.add()
 		embedding.tensor_name = final_embeddings.name
 		# Link this tensor to its metadata file (e.g. labels).
-		embedding.metadata_path = os.path.join(dirToSave, '/metadata.tsv')
+		embedding.metadata_path = os.path.join(dirToSave, 'metadata.tsv')
 		# Saves a configuration file that TensorBoard will read during startup.
 		projector.visualize_embeddings(summary_writer, config)
 	
@@ -172,7 +172,7 @@ class Word2Vec:
 			init = tf.global_variables_initializer()
 			
 		# Link Python program to C++ interface and execute operations on the graph 
-		num_steps = 500000
+		num_steps = 2000000
 		with tf.Session(graph=graph) as session:
 		# We must initialize all variables before we use them.
 			init.run()
@@ -205,21 +205,9 @@ class Word2Vec:
 			final_embeddings = normalized_embeddings.eval()
 			##Save model 
 			self.writeLookUpTableToFile(dirToSave)
-			saver = tf.train.Saver({'embeddings':embeddings})	
-			saver.save(session,dirToSave+'/model.ckpt')
-			
-			##setup tensor board
-			from tensorflow.contrib.tensorboard.plugins import projector
-			summary_writer = tf.summary.FileWriter(dirToSave)
-			config = projector.ProjectorConfig()
-			embedding = config.embeddings.add()
-			embedding.tensor_name = embeddings.name
-			# Link this tensor to its metadata file (e.g. labels).
-			embedding.metadata_path = os.path.join(dirToSave, '/metadata.tsv')
-			# Saves a configuration file that TensorBoard will read during startup.
-			projector.visualize_embeddings(summary_writer, config)
-
-
+			saver = tf.train.Saver()	
+			saver.save(session,os.path.join(dirToSave,'model.ckpt'))
+			self.setUpTensorBoard(dirToSave,embeddings)		
 		return final_embeddings	  
 	
 	def plot_with_labels(self,low_dim_embs, labels, filename='tsne.png'):
