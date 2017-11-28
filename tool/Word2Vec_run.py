@@ -17,7 +17,7 @@ num_sampled = 64    #
 VocabularySize = 10000
 loss = 'nce'
 optimiser ='gradient_descent'
-learning_rate = 0.1
+learning_rate = 1.0
 dir_to_Save = '/home/dawna/mah90/Opus2/Project/models'
 
 
