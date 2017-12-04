@@ -1,2 +1,2 @@
-model_checkpoint_path: "/home/dawna/mah90/Opus2/Project/models/model.ckpt"
-all_model_checkpoint_paths: "/home/dawna/mah90/Opus2/Project/models/model.ckpt"
+model_checkpoint_path: "model.ckpt"
+all_model_checkpoint_paths: "model.ckpt"

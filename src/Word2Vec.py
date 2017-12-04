@@ -30,7 +30,8 @@ class Word2Vec:
 		self.int2Word = int2Word
 		self.vocabSize = self.PreProcessObj.getVocabSize()	
 
-	def  configure(self,batch_size=128,valid_size=70,validSampStInd = 100,validSampEndInd=200,embedding_size=128,skip_window=3,num_skips=2,lossfunction='nce',optimiser='gradient_descent',learning_rate=1.0,num_sampled_nce=64):
+	def  configure(self,training_steps=200000,batch_size=128,valid_size=70,validSampStInd = 100,validSampEndInd=200,embedding_size=128,skip_window=3,num_skips=2,lossfunction='nce',optimiser='gradient_descent',learning_rate=1.0,num_sampled_nce=64):
+		self.training_steps = training_steps
 		self.batch_size = batch_size
 		self.valid_size = valid_size
 		self.validSampStIndex = validSampStInd
@@ -129,7 +130,7 @@ class Word2Vec:
 	def writeLookUpTableToFile(self,dirToSave):
 		file= open(dirToSave+'/metadata.tsv','w')
 		file.write('Word\tID\n')
-		for word,id in self.word2Int.items():
+		for id,word in self.int2Word.items():
 			file.write(word+'\t'+str(id)+'\n')
 		file.close()		
 
@@ -172,7 +173,7 @@ class Word2Vec:
 			init = tf.global_variables_initializer()
 			
 		# Link Python program to C++ interface and execute operations on the graph 
-		num_steps = 2000000
+		num_steps = self.training_steps
 		with tf.Session(graph=graph) as session:
 		# We must initialize all variables before we use them.
 			init.run()
@@ -207,7 +208,7 @@ class Word2Vec:
 			self.writeLookUpTableToFile(dirToSave)
 			saver = tf.train.Saver()	
 			saver.save(session,os.path.join(dirToSave,'model.ckpt'))
-			self.setUpTensorBoard(dirToSave,embeddings)		
+			self.setUpTensorBoard(dirToSave,normalized_embeddings)		
 		return final_embeddings	  
 	
 	def plot_with_labels(self,low_dim_embs, labels, filename='tsne.png'):
@@ -225,12 +226,12 @@ class Word2Vec:
 
 		plt.savefig(filename)
 
-	def displayResults(self,embeddings):
+	def displayResults(self,embeddings,validSampEndInd):
 		try:
 			tsne = TSNE(perplexity=30, n_components=2, init='pca', n_iter=5000)
-			plot_only = 500
-			low_dim_embs = tsne.fit_transform(embeddings[:plot_only, :])
-			labels = [self.int2Word[i] for i in xrange(plot_only)]
+			#plot_only = 500
+			low_dim_embs = tsne.fit_transform(embeddings[:validSampEndInd+500, :])
+			labels = [self.int2Word[i] for i in xrange(validSampEndInd+500)]
 			self.plot_with_labels(low_dim_embs, labels)
 		
 		except ImportError:
