@@ -208,7 +208,7 @@ class Word2Vec:
 			self.writeLookUpTableToFile(dirToSave)
 			saver = tf.train.Saver()	
 			saver.save(session,os.path.join(dirToSave,'model.ckpt'))
-			self.setUpTensorBoard(dirToSave,normalized_embeddings)		
+			self.setUpTensorBoard(dirToSave,embeddings)		
 		return final_embeddings	  
 	
 	def plot_with_labels(self,low_dim_embs, labels, filename='tsne.png'):
