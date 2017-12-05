@@ -1,5 +1,7 @@
 import sys
 import os
+import pickle
+
 sys.path.append('../src/')
 from Word2Vec import Word2Vec
 
@@ -8,7 +10,7 @@ batch_size = 256      # decision on the size of the batch impacts the choice of 
 embedding_size = 128  # Dimension of the embedding vector.
 skip_window = 2       # How many words to consider left and right.
 num_skips = 2         # How many times to reuse an input to generate a label.
-training_steps = 600000 # Number of updates
+training_steps = 6000000 # Number of updates
 # We pick a random validation set to sample nearest neighbors. 
 valid_size = 49       # Size of validation set 
 wordIdStart = 100     # Consider wordids whose index is between this range
@@ -36,8 +38,13 @@ Word2Vec_model.configure(
 	learning_rate=learning_rate,
 	num_sampled_nce=num_sampled,
 	)
-final_embeddings = Word2Vec_model.trainWord2Vec(dir_to_Save)	
-Word2Vec_model.displayResults(embeddings=final_embeddings, validSampEndInd=wordIdEnd)
+final_embeddings, word2Int = Word2Vec_model.trainWord2Vec(dir_to_Save)	
+#Word2Vec_model.displayResults(embeddings=final_embeddings, validSampEndInd=wordIdEnd)
+# Note : When running Tensorboard, for good visualization TSNE is recommended with setting TSNE(perplexity=30,n_components=2,init='pca',n_iter=5000)
 
-
-# Note : When running Tensorboard, for good visualization TSNE is recommended with setting TSNE(perplexity=30,n_components=2,init='pca',n_iter=5000) 
+#Save Embeddings and encodings of Words to Integers
+collections ={}
+with open(dir_to_Save+"/final_embedding.file", "wb") as f:
+	collections['embeddings'] = final_embeddings
+	collections['word2Int'] = word2Int
+	pickle.dump(collections, f, pickle.HIGHEST_PROTOCOL) 

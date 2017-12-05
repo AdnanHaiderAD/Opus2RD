@@ -209,7 +209,7 @@ class Word2Vec:
 			saver = tf.train.Saver()	
 			saver.save(session,os.path.join(dirToSave,'model.ckpt'))
 			self.setUpTensorBoard(dirToSave,embeddings)		
-		return final_embeddings	  
+		return final_embeddings,self.word2Int	  
 	
 	def plot_with_labels(self,low_dim_embs, labels, filename='tsne.png'):
 		assert low_dim_embs.shape[0] >= len(labels), 'More labels than embeddings'
