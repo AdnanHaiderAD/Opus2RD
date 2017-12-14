@@ -145,7 +145,7 @@ class Word2Vec:
 		# Saves a configuration file that TensorBoard will read during startup.
 		projector.visualize_embeddings(summary_writer, config)
 	
-	def trainWord2Vec(self, dirToSave):
+	def trainWord2Vec(self, dirToSave,modelToLoad='',saveIntermediateModels = False):
 		###Create a dataflow graph
 		graph = tf.Graph()
 		with graph.as_default():
@@ -174,10 +174,14 @@ class Word2Vec:
 			
 		# Link Python program to C++ interface and execute operations on the graph 
 		num_steps = self.training_steps
+		with graph.as_default():
+			saver = tf.train.Saver()
 		with tf.Session(graph=graph) as session:
 		# We must initialize all variables before we use them.
 			init.run()
-			print('Initialized')
+			if(modelToLoad !=''):
+				saver.restore(session,modelToLoad)	
+				print('Initialized from Intermediate model')
 			average_loss = 0
 			for step in xrange(num_steps):
 				batch_inputs, batch_labels = self.generate_batch()
@@ -203,10 +207,11 @@ class Word2Vec:
 							close_word = self.int2Word[nearest[k]]
 							log_str = '%s %s,' % (log_str, close_word)
 						print(log_str)
+						if (saveIntermediateModels):
+							saver.save(session,os.path.join(dirToSave,'model_intermediate.ckpt'))
 			final_embeddings = normalized_embeddings.eval()
 			##Save model 
 			self.writeLookUpTableToFile(dirToSave)
-			saver = tf.train.Saver()	
 			saver.save(session,os.path.join(dirToSave,'model.ckpt'))
 			self.setUpTensorBoard(dirToSave,embeddings)		
 		return final_embeddings,self.word2Int	  

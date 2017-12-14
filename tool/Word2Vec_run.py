@@ -38,9 +38,23 @@ Word2Vec_model.configure(
 	learning_rate=learning_rate,
 	num_sampled_nce=num_sampled,
 	)
-final_embeddings, word2Int = Word2Vec_model.trainWord2Vec(dir_to_Save)	
-#Word2Vec_model.displayResults(embeddings=final_embeddings, validSampEndInd=wordIdEnd)
-# Note : When running Tensorboard, for good visualization TSNE is recommended with setting TSNE(perplexity=30,n_components=2,init='pca',n_iter=5000)
+
+####################### Different ways to train ############################
+
+#  1) Train model from scatch and save intermediate models along with the final model
+#final_embeddings, word2Int = Word2Vec_model.trainWord2Vec(dirToSave= dir_to_Save,saveIntermediateModels = True)	
+
+# 2) Train from intermediate starting point
+final_embeddings, word2Int = Word2Vec_model.trainWord2Vec(dirToSave= dir_to_Save,modelToLoad='../models/model_intermediate.ckpt',saveIntermediateModels = True)	
+
+
+
+
+#For training locally and viewing embeddings
+Word2Vec_model.displayResults(embeddings=final_embeddings, validSampEndInd=wordIdEnd)
+
+##Notes : When running Tensorboard, for good visualization TSNE is recommended with setting TSNE(perplexity=30,n_components=2,init='pca',n_iter=5000)
+
 
 #Save Embeddings and encodings of Words to Integers
 collections ={}
